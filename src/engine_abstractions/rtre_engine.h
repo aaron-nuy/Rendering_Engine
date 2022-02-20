@@ -2,6 +2,7 @@
 #include "Ebo.h"
 #include "Vao.h"
 #include "Sampler.h"
+#include "Vertex.h"
 
 namespace rtre {
 

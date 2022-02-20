@@ -31,7 +31,7 @@ namespace rtre
 			vb.free();
 		}
 		template<class T>
-		Vbo(const std::vector<T>& vertices) {
+		Vbo(const std::vector<T>& vertices)  {
 			glGenBuffers(1, &m_ID);
 			glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(T), vertices.data(), GL_STATIC_DRAW);

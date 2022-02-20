@@ -413,8 +413,8 @@
     <ClInclude Include="src\engine_abstractions\rtre_engine.h" />
     <ClInclude Include="src\engine_abstractions\Sampler.h" />
     <ClInclude Include="src\engine_abstractions\Shader.h" />
-    <ClInclude Include="src\engine_abstractions\Vertex2.h" />
-    <ClInclude Include="src\engine_abstractions\Vertex3.h" />
+    <ClInclude Include="src\engine_abstractions\Vertex.h" />
+    <ClInclude Include="src\engine_meshes\Meshes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\glm\detail\func_common.inl" />

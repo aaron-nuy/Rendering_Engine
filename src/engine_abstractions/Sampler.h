@@ -7,21 +7,50 @@
 
 namespace rtre {
 
-
+	enum Senum {
+		diffuse,
+		specular,
+		metalic
+	};
 	class Sampler {
+
+
 	public:
 
-		enum Senum {
-			diffuse,
-			specular,
-			metalic
-		};
-		
-		Sampler(const char* image, GLuint unit, Senum type = diffuse)
-			:
-			m_Unit(unit),
-			m_Type(type)
+
+		virtual inline GLuint unit() const { return m_Unit; }
+		virtual inline GLuint id() const { return m_ID; }
+		virtual inline Senum type() const { return m_Type; }
+		virtual inline void free() { glDeleteTextures(1, &m_ID); };
+
+		virtual inline void setUnit(GLuint unit) { m_Unit = unit; }
+		virtual inline void setType(Senum type) { m_Type = type; }
+
+		virtual void assign(RenderShader& shader, const char* uniform, GLuint unit) 
 		{
+			GLuint samplerUniform = glGetUniformLocation(shader.id(), uniform);
+
+			shader.activate();
+
+			glUniform1i(samplerUniform, unit);
+		}
+
+		virtual void bind() = 0;
+		virtual void unbind() = 0;
+
+	protected:
+		GLuint m_Unit = 0;
+		GLuint m_ID = 0;
+		Senum m_Type = diffuse;
+	};
+
+
+	class Sampler2D : public Sampler {
+	public:
+		Sampler2D(const char* image, GLuint unit, Senum type = diffuse)
+		{
+			m_Unit = unit;
+			m_Type = type;
 			int widthImg, heightImg, numColCh;
 			stbi_set_flip_vertically_on_load(true);
 			unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
@@ -70,50 +99,18 @@ namespace rtre {
 			}
 		}
 
-		inline void bind(){
+		inline void bind() override {
 			glActiveTexture(GL_TEXTURE0 + m_Unit);
 			glBindTexture(GL_TEXTURE_2D, m_ID);
 		}
-		inline void unbind(){ glBindTexture(GL_TEXTURE_2D, 0); }
-		inline void free(){ glDeleteTextures(1, &m_ID); }
-
-		inline void setUnit(GLuint unit) { m_Unit = unit; }
-		inline void setType(Senum type) { m_Type = type; }
-
-		inline GLuint unit() const { return m_Unit; }
-		inline GLuint id() const { return m_ID; }
-		inline GLuint type() const { return m_Type; }
-
-		void assign(AbstractShader& shader, const char* uniform, GLuint unit)
-		{
-			GLuint samplerUniform = glGetUniformLocation(shader.id(), uniform);
-
-			shader.activate();
-
-			glUniform1i(samplerUniform, unit);
-		}
-
-	private:
-
-		GLuint m_Unit = 0;
-		GLuint m_ID = 0;
-		Senum m_Type = diffuse;
-
+		inline void unbind() override { glBindTexture(GL_TEXTURE_2D, 0); }
 	};
 
-	class Sampler3D {
-
-		enum Senum {
-			diffuse,
-			specular,
-			metalic
-		};
-
+	class Sampler3D : public Sampler {
 		Sampler3D(const std::array<std::string,6>& mapsides,GLuint unit,Senum type = diffuse)
-			:
-			m_Unit(unit),
-			m_Type(type)
 		{
+			m_Unit = unit;
+			m_Type = type;
 
 			glGenTextures(1, &m_ID);
 
@@ -165,33 +162,11 @@ namespace rtre {
 			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		}
 
-		inline void bind() {
+		inline void bind() override {
 			glActiveTexture(GL_TEXTURE0 + m_Unit);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 		}
-		inline void unbind() { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
-		inline void free() { glDeleteTextures(1, &m_ID); }
-
-		inline void setUnit(GLuint unit) { m_Unit = unit; }
-
-		inline GLuint unit() const { return m_Unit; }
-		inline GLuint id() const { return m_ID; }
-		inline GLuint type() const { return m_Type; }
-
-		void assign(AbstractShader& shader, const char* uniform, GLuint unit)
-		{
-			GLuint samplerUniform = glGetUniformLocation(shader.id(), uniform);
-
-			shader.activate();
-
-			glUniform1i(samplerUniform, unit);
-		}
-
-	private:
-
-		GLuint m_Unit = 0;
-		GLuint m_ID = 0;
-		Senum m_Type = diffuse;
+		inline void unbind() override { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
 	};
 
 }
