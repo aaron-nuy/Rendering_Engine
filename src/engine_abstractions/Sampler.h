@@ -8,16 +8,13 @@
 namespace rtre {
 
 	enum Senum {
-		diffuse,
-		specular,
-		metalic
+		rTdiffuse,
+		rTspecular,
+		rTnormal,
+		rTheight
 	};
 	class Sampler {
-
-
 	public:
-
-
 		virtual inline GLuint unit() const { return m_Unit; }
 		virtual inline GLuint id() const { return m_ID; }
 		virtual inline Senum type() const { return m_Type; }
@@ -38,16 +35,19 @@ namespace rtre {
 		virtual void bind() = 0;
 		virtual void unbind() = 0;
 
+		virtual void setPath(const std::string& path) { m_Path = path; }
+		virtual const std::string& path() { return m_Path; }
+
 	protected:
 		GLuint m_Unit = 0;
 		GLuint m_ID = 0;
 		Senum m_Type = diffuse;
+		std::string m_Path;
 	};
-
 
 	class Sampler2D : public Sampler {
 	public:
-		Sampler2D(const char* image, GLuint unit, Senum type = diffuse)
+		Sampler2D(const char* image, GLuint unit, Senum type = rTdiffuse)
 		{
 			m_Unit = unit;
 			m_Type = type;
@@ -107,7 +107,7 @@ namespace rtre {
 	};
 
 	class Sampler3D : public Sampler {
-		Sampler3D(const std::array<std::string,6>& mapsides,GLuint unit,Senum type = diffuse)
+		Sampler3D(const std::array<std::string,6>& mapsides,GLuint unit,Senum type = rTdiffuse)
 		{
 			m_Unit = unit;
 			m_Type = type;

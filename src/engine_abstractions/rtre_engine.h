@@ -38,10 +38,10 @@ namespace rtre {
 		glClearColor(r, g, b, a);
 	}
 	void setBackgroundColor(vec3 vec, GLfloat a = 0.0) {
-		glClearColor = vec4(vec.x, vec.y, vec.z, a);
+		glClearColor(vec.x, vec.y, vec.z, a);
 	}
 	void setBackgroundColor(vec4 vec) {
-		glClearColor = vec4(vec.x, vec.y, vec.z, vec.y);
+		glClearColor(vec.x, vec.y, vec.z, vec.y);
 	}
 
 	void clearBuffers(int glflags) {

@@ -3,8 +3,7 @@
 #include <array>
 #include "glad/glad.h"
 #include "glm/glm.hpp"
-#include "Vertex2.h"
-#include "Vertex3.h"
+#include "Vertex.h"
 
 namespace rtre 
 {
