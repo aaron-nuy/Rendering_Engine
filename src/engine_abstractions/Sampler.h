@@ -80,9 +80,9 @@ namespace rtre {
 		inline void setUnit(GLuint unit) { m_Unit = unit; }
 		inline void setType(Senum type) { m_Type = type; }
 
-		inline GLuint unit() { return m_Unit; }
-		inline GLuint id(){ return m_ID; }
-		inline GLuint type(){ return m_Type; }
+		inline GLuint unit() const { return m_Unit; }
+		inline GLuint id() const { return m_ID; }
+		inline GLuint type() const { return m_Type; }
 
 		void assign(AbstractShader& shader, const char* uniform, GLuint unit)
 		{
@@ -174,8 +174,9 @@ namespace rtre {
 
 		inline void setUnit(GLuint unit) { m_Unit = unit; }
 
-		inline GLuint unit() { return m_Unit; }
-		inline GLuint id() { return m_ID; }
+		inline GLuint unit() const { return m_Unit; }
+		inline GLuint id() const { return m_ID; }
+		inline GLuint type() const { return m_Type; }
 
 		void assign(AbstractShader& shader, const char* uniform, GLuint unit)
 		{

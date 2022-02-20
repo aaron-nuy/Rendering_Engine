@@ -80,7 +80,7 @@ namespace rtre
 			glDeleteBuffers(1, &m_ID);
 		}
 
-		inline GLuint id() {
+		inline GLuint id() const {
 			return m_ID;
 		}
 

@@ -69,7 +69,7 @@ namespace rtre {
 			}
 		}
 
-		inline GLuint getUnifromID(const char* name) {
+		inline GLuint getUnifromID(const char* name) const {
 			return glGetUniformLocation(m_ID, name);
 		}
 
@@ -111,7 +111,7 @@ namespace rtre {
 		}
 
 
-		inline GLuint id() {
+		inline GLuint id() const {
 			return m_ID;
 		}
 

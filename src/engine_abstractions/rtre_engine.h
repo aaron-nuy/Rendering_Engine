@@ -5,8 +5,6 @@
 
 namespace rtre {
 
-	vec4 backgroundColor(0);
-
 	/*
 		Initilize glad
 		Must be called after setting window context
@@ -36,17 +34,16 @@ namespace rtre {
 	}
 
 	void setBackgroundColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 0.0) {
-		backgroundColor = vec4(r, g, b, a);
+		glClearColor(r, g, b, a);
 	}
 	void setBackgroundColor(vec3 vec, GLfloat a = 0.0) {
-		backgroundColor = vec4(vec.x, vec.y, vec.z, a);
+		glClearColor = vec4(vec.x, vec.y, vec.z, a);
 	}
 	void setBackgroundColor(vec4 vec) {
-		backgroundColor = vec4(vec.x, vec.y, vec.z, vec.y);
+		glClearColor = vec4(vec.x, vec.y, vec.z, vec.y);
 	}
 
 	void clearBuffers(int glflags) {
-		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
 		glClear(glflags);
 	}
 }
