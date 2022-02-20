@@ -72,23 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)intermediates\$(Configuration)</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)intermediates\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)intermediates\$(Configuration)</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)intermediates\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)intermediates\$(Configuration)</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)intermediates\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)intermediates\$(Configuration)</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)intermediates\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -156,6 +156,8 @@
     <ClCompile Include="src\dependencies\stb_image.cpp" />
     <ClCompile Include="src\dependencies\stb_image_write.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Vao.h" />
+    <ClCompile Include="src\Vbo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\glad\glad.h" />
@@ -407,6 +409,10 @@
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="src\dependencies\stb_image.h" />
     <ClInclude Include="src\dependencies\stb_image_write.h" />
+    <ClInclude Include="src\Ebo.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Vertex2.h" />
+    <ClInclude Include="src\Vertex3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\glm\detail\func_common.inl" />
