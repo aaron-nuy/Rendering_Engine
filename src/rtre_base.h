@@ -3,14 +3,17 @@
 #include "engine_abstractions/shader.h"
 #include "engine_resources/default_shaders.h"
 #include "engine_rendering/camera.h"
+#include "GLFW/ar_WGL.h"
 
 namespace rtre {
 	
+
 	static std::shared_ptr<RenderShader> d3Shader;
 	static std::shared_ptr<RenderShader> d2Shader;
 	static Camera camera;
 	static GLuint viewportWidth;
 	static GLuint viewportHeight;
+	static WGLWindow* eWindow;
 
 
 	inline void setViewport(GLuint vWidth, GLuint vHeight) {
@@ -23,12 +26,13 @@ namespace rtre {
 	Initilize glad
 	Must be called after setting window context
 	*/
-	inline void init(GLuint viewportWidth,GLuint viewportHeight,
+	inline void init(GLuint viewportWidth,GLuint viewportHeight, WGLWindow* window,
 			const glm::vec3& pos = glm::vec3(0,0,0),GLfloat aspectRatio = 1.0f, 
 			GLfloat fov = 75.0f, GLfloat zNear = 0.05f, GLfloat zFar = 500.0f) {
 		gladLoadGL();
 		setViewport(viewportWidth, viewportHeight);
 		camera = Camera(pos, aspectRatio, fov, zNear, zFar);
+		eWindow = window;
 
 		d3Shader = std::make_shared<RenderShader>(shaders::d3Vertex, shaders::d3Frag);
 		d2Shader = std::make_shared<RenderShader>(shaders::d2Vertex, shaders::d2Frag);

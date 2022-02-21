@@ -159,8 +159,9 @@ namespace rtre {
         }
 
         void draw() {
+            m_Shader->activate();
             for (auto& mesh : m_Meshes)
-                mesh.draw(*m_Shader);
+                mesh.draw();
         }
     };
 }

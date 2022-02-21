@@ -25,7 +25,7 @@ namespace rtre {
 		inline std::vector<Vertex3>& vertices() { return m_Vertices; }
 		inline std::vector<Sampler2D>& textures() { return m_Textures; }
 		
-		virtual void draw(RenderShader& shader) = 0;
+		virtual void draw() = 0;
 		virtual void draw_instanced(){}
 
 	};
@@ -52,9 +52,8 @@ namespace rtre {
 			ebo.unbind();
 		}
 
-		virtual void draw(RenderShader& shader) override {
+		virtual void draw() override {
 
-			shader.activate();
 			m_Vao.bind();
 
 			for (auto& texture : m_Textures) {
