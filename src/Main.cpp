@@ -14,8 +14,7 @@ int main()
 	WGLWindow window(500, 500, "Hey you");
 	window.makeContextCurrent();
 
-	rtre::init();
-	rtre::setViewport(500, 500);
+	rtre::init(500,500);
 
 	while (!window.shouldClose()) {
 		rtre::setBackgroundColor(0.5, 0.1, 0.1,1.0);

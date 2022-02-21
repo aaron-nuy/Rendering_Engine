@@ -2,27 +2,41 @@
 #include <memory>
 #include "engine_abstractions/shader.h"
 #include "engine_resources/default_shaders.h"
+#include "engine_rendering/camera.h"
+#include "engine_movement/controller.h"
 
 namespace rtre {
 	
-	std::shared_ptr<RenderShader> d3Shader;
-	std::shared_ptr<RenderShader> d2Shader;
+	static std::shared_ptr<RenderShader> d3Shader;
+	static std::shared_ptr<RenderShader> d2Shader;
+	static Camera camera;
+	static GLuint viewportWidth;
+	static GLuint viewportHeight;
+
+
+	inline void setViewport(GLuint vWidth, GLuint vHeight) {
+		viewportWidth = vWidth;
+		viewportHeight = vHeight;
+		glViewport(0, 0, viewportWidth, viewportHeight);
+	}
 
 	/*
-		Initilize glad
-		Must be called after setting window context
+	Initilize glad
+	Must be called after setting window context
 	*/
-	void init() {
+	inline void init(GLuint viewportWidth,GLuint viewportHeight,
+			const glm::vec3& pos = glm::vec3(0,0,0),GLfloat aspectRatio = 1.0f, 
+			GLfloat fov = 75.0f, GLfloat zNear = 0.05f, GLfloat zFar = 500.0f) {
 		gladLoadGL();
-		
+		setViewport(viewportWidth, viewportHeight);
+		camera = Camera(pos, aspectRatio, fov, zNear, zFar);
+
 		d3Shader = std::make_shared<RenderShader>(shaders::d3Vertex, shaders::d3Frag);
 		d2Shader = std::make_shared<RenderShader>(shaders::d2Vertex, shaders::d2Frag);
 		
 	}
 
-	void setViewport(GLuint width, GLuint height) {
-		glViewport(0, 0, width, height);
-	}
+
 
 	void enable(int glflags) {
 		glEnable(glflags);

@@ -499,6 +499,8 @@
     <ClInclude Include="src\engine_abstractions\dependencies\stb_image.h" />
     <ClInclude Include="src\engine_abstractions\dependencies\stb_image_write.h" />
     <ClInclude Include="src\engine_meshes\models.h" />
+    <ClInclude Include="src\engine_movement\controller.h" />
+    <ClInclude Include="src\engine_rendering\camera.h" />
     <ClInclude Include="src\rtre.h" />
     <ClInclude Include="src\rtre_base.h" />
     <ClInclude Include="src\engine_abstractions\sampler.h" />
