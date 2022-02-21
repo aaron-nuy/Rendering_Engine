@@ -3,7 +3,7 @@
 #include <array>
 #include "glad/glad.h"
 #include "dependencies/stb_image.h"
-#include "Shader.h"
+#include "shader.h"
 
 namespace rtre {
 
@@ -41,7 +41,7 @@ namespace rtre {
 	protected:
 		GLuint m_Unit = 0;
 		GLuint m_ID = 0;
-		Senum m_Type = diffuse;
+		Senum m_Type = rTdiffuse;
 		std::string m_Path;
 	};
 
@@ -168,5 +168,7 @@ namespace rtre {
 		}
 		inline void unbind() override { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
 	};
+
+
 
 }

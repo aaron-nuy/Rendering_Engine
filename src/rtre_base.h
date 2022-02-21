@@ -1,10 +1,12 @@
 #pragma once
-#include "Ebo.h"
-#include "Vao.h"
-#include "Sampler.h"
-#include "Vertex.h"
+#include <memory>
+#include "engine_abstractions/shader.h"
+#include "engine_resources/default_shaders.h"
 
 namespace rtre {
+	
+	std::shared_ptr<RenderShader> d3Shader;
+	std::shared_ptr<RenderShader> d2Shader;
 
 	/*
 		Initilize glad
@@ -12,6 +14,10 @@ namespace rtre {
 	*/
 	void init() {
 		gladLoadGL();
+		
+		d3Shader = std::make_shared<RenderShader>(shaders::d3Vertex, shaders::d3Frag);
+		d2Shader = std::make_shared<RenderShader>(shaders::d2Vertex, shaders::d2Frag);
+		
 	}
 
 	void setViewport(GLuint width, GLuint height) {

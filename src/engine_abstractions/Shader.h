@@ -16,7 +16,7 @@ namespace rtre {
 	using glm::mat3;
 	using glm::mat2;
 
-	const std::string& get_file_contents(const char* filename) {
+	std::string get_file_contents(const char* filename) {
 		std::ifstream file(filename, std::ios::binary);
 		if (file)
 		{
@@ -28,7 +28,7 @@ namespace rtre {
 			file.close();
 			return(contents);
 		}
-		throw(errno);
+		throw(std::exception("Couldn't load shader file.\n"));
 	}
 
 	class AbstractShader {
@@ -110,7 +110,6 @@ namespace rtre {
 			glUniform1f(uniID, value);
 		}
 
-
 		inline GLuint id() const {
 			return m_ID;
 		}
@@ -122,25 +121,32 @@ namespace rtre {
 
 	public:
 
-		RenderShader(const char* vertexFile, const char* fragmentFile, const char* geometryFile = nullptr)
+		RenderShader(const char* vertexFile, const char* fragmentFile, const char* geometryFile = NULL)
 		{
-			// Read vertexFile and fragmentFile and store the strings
-			std::string vertexCode = get_file_contents(vertexFile);
-			std::string fragmentCode = get_file_contents(fragmentFile);
+			 const char* vertexCode;
+			 const char* fragmentCode;
 
-			// Convert the shader source strings into character arrays
-			const char* vertexSource = vertexCode.c_str();
-			const char* fragmentSource = fragmentCode.c_str();
+			try {
+				std::string vertexSource = get_file_contents(vertexFile);
+				std::string fragSource = get_file_contents(fragmentFile);
+				// Read vertexFile and fragmentFile and store the strings
+				vertexCode = vertexSource.c_str();
+				fragmentCode = fragSource.c_str();
+			}
+			catch (std::exception& e) {
+				vertexCode = vertexFile;
+				fragmentCode = fragmentFile;
+			}
 
 			// Create Vertex Shader Object and get its reference
 			GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(vertexShader, 1, &vertexSource, NULL);
+			glShaderSource(vertexShader, 1, &vertexCode, NULL);
 			glCompileShader(vertexShader);
 			checkError(vertexShader, "VERTEX");
 
 			// Create Fragment Shader Object and get its reference
 			GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+			glShaderSource(fragmentShader, 1, &fragmentCode, NULL);
 			glCompileShader(fragmentShader);
 			checkError(fragmentShader, "FRAGMENT");
 
@@ -155,7 +161,7 @@ namespace rtre {
 			glDeleteShader(fragmentShader);
 
 		}
-		
+
 		~RenderShader() {
 			glDeleteProgram(m_ID);
 		}

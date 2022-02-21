@@ -1,83 +1,16 @@
 #pragma once
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-#include "../engine_abstractions/rtre_engine.h"
-
+#include <vector>
+#include "mesh.h"
+#include "../engine_abstractions/shader.h"
+#include "../rtre_base.h"
 
 namespace rtre {
 
-	class AbstractMesh {
-	protected:
-		std::vector<GLuint> m_Indices;
-		std::vector<Vertex3> m_Vertices;
-		std::vector<Sampler2D> m_Textures;
-	
-		Vao m_Vao;
+    class Model {
 
-		// View m_View (for camera location)
-
-	public:
-
-		inline std::vector<GLuint>& indices() { return m_Indices; }
-		inline std::vector<Vertex3>& vertices() { return m_Vertices; }
-		inline std::vector<Sampler2D>& textures() { return m_Textures; }
-		
-		virtual void draw(RenderShader& shader) = 0;
-		virtual void draw_instanced(){}
-
-	};
-
-	class Mesh : public AbstractMesh{
-
-	public:
-
-		Mesh(const std::vector<Vertex3>& vertices, const std::vector<GLuint>& indices, const std::vector<Sampler2D>& textures)
-		{
-			m_Vertices = vertices;
-			m_Indices = indices;
-			m_Textures = textures;
-
-			m_Vao.bind();
-			Vbo vbo(vertices);
-			Ebo ebo(indices);
-			m_Vao.linkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex3), (void*)0);
-			m_Vao.linkAttrib(vbo, 1, 3, GL_FLOAT, sizeof(Vertex3), (void*)(3 * sizeof(float)));
-			m_Vao.linkAttrib(vbo, 2, 3, GL_FLOAT, sizeof(Vertex3), (void*)(6 * sizeof(float)));
-			m_Vao.linkAttrib(vbo, 3, 2, GL_FLOAT, sizeof(Vertex3), (void*)(9 * sizeof(float)));
-			m_Vao.unbind();
-			vbo.unbind();
-			ebo.unbind();
-		}
-
-		virtual void draw(RenderShader& shader) override {
-
-			shader.activate();
-			m_Vao.bind();
-
-			for (auto& texture : m_Textures) {
-				Senum type = texture.type();
-
-				texture.bind();
-				if (type == rTdiffuse)
-                    texture.assign(shader, "diffuse", texture.unit());
-                else if (type == rTspecular)
-                    texture.assign(shader, "specular", texture.unit());
-                else if (type == rTnormal)
-					texture.assign(shader, "normal", texture.unit());
-                else
-                    texture.assign(shader, "height", texture.unit());
-			}
-
-			glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
-		}
-	};
-
-	class Model {
-
-		std::vector<Mesh> m_Meshes;
-		std::vector<Sampler2D> loaded_Textures;
-		RenderShader* m_Shader;
+        std::vector<Mesh> m_Meshes;
+        std::vector<Sampler2D> loaded_Textures;
+        std::shared_ptr<RenderShader> m_Shader;
         std::string directory;
 
         void processNode(aiNode* node, const aiScene* scene)
@@ -101,7 +34,7 @@ namespace rtre {
             for (unsigned int i = 0; i < mesh->mNumVertices; i++)
             {
                 Vertex3 vertex;
-                glm::vec3 vector; 
+                glm::vec3 vector;
                 vector.x = mesh->mVertices[i].x;
                 vector.y = mesh->mVertices[i].y;
                 vector.z = mesh->mVertices[i].z;
@@ -113,7 +46,7 @@ namespace rtre {
                     vector.z = mesh->mNormals[i].z;
                     vertex.normal = vector;
                 }
-                if (mesh->mTextureCoords[0]) 
+                if (mesh->mTextureCoords[0])
                 {
                     glm::vec2 vec;
 
@@ -179,39 +112,55 @@ namespace rtre {
 
     public:
 
-        Model() = delete;
-        Model(RenderShader& shader)
-            :
-            m_Shader(&shader)
-        {
+        Model() {
+            m_Shader = d3Shader;
         }
-        Model(const std::string& path, RenderShader& shader)
-            :
-            m_Shader(&shader)
+        Model(std::shared_ptr<RenderShader> shader)
         {
+            m_Shader = shader;
+        }
+        Model(const std::string& path, std::shared_ptr<RenderShader> shader)
+        {
+            m_Shader = shader;
             loadModel(path);
         }
+        Model(const std::string& path)
+        {
+            m_Shader = d3Shader;
+            loadModel(path);
+        }
+        Model(const std::string& path,const char* vertexShaderPath, const char* fragShaderPath,
+            const char* geometryShaderPath = nullptr)
+        {
+            m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
+            loadModel(path);
+        }
+        Model(const char* vertexShaderPath, const char* fragShaderPath,
+            const char* geometryShaderPath = nullptr)
+        {
+            m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
+        }
 
-		void loadModel(const std::string& path)
-		{
-			Assimp::Importer import;
-			const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-			{
-				std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
-				return;
-			}
-			directory = path.substr(0, path.find_last_of('/'));
+        void loadModel(const std::string& path)
+        {
+            m_Meshes.clear();
+            Assimp::Importer import;
+            const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-			processNode(scene->mRootNode, scene);
-		}
+            if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+            {
+                std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+                return;
+            }
+            directory = path.substr(0, path.find_last_of('/'));
 
+            processNode(scene->mRootNode, scene);
+        }
 
         void draw() {
             for (auto& mesh : m_Meshes)
                 mesh.draw(*m_Shader);
         }
-	};
-
+    };
 }

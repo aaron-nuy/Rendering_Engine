@@ -102,7 +102,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;ar_WGLd.lib;assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,7 +121,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;ar_WGL.lib;assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,7 +136,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;ar_WGLd.lib;assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,7 +155,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;ar_WGL.lib;assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -163,11 +163,10 @@
     <ClCompile Include="src\engine_abstractions\dependencies\glad.c" />
     <ClCompile Include="src\engine_abstractions\dependencies\stb_image.cpp" />
     <ClCompile Include="src\engine_abstractions\dependencies\stb_image_write.cpp" />
-    <ClCompile Include="src\engine_abstractions\Main.cpp" />
-    <ClCompile Include="src\engine_abstractions\Vao.h" />
-    <ClCompile Include="src\engine_abstractions\Vbo.h" />
+    <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ar_WGL.h" />
     <ClInclude Include="include\assimp\aabb.h" />
     <ClInclude Include="include\assimp\ai_assert.h" />
     <ClInclude Include="include\assimp\anim.h" />
@@ -496,14 +495,17 @@
     <ClInclude Include="include\glm\vector_relational.hpp" />
     <ClInclude Include="include\json\json.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
+    <ClInclude Include="src\engine_abstractions\buffer_objects.h" />
     <ClInclude Include="src\engine_abstractions\dependencies\stb_image.h" />
     <ClInclude Include="src\engine_abstractions\dependencies\stb_image_write.h" />
-    <ClInclude Include="src\engine_abstractions\Ebo.h" />
-    <ClInclude Include="src\engine_abstractions\rtre_engine.h" />
-    <ClInclude Include="src\engine_abstractions\Sampler.h" />
-    <ClInclude Include="src\engine_abstractions\Shader.h" />
-    <ClInclude Include="src\engine_abstractions\Vertex.h" />
-    <ClInclude Include="src\engine_meshes\Meshes.h" />
+    <ClInclude Include="src\engine_meshes\models.h" />
+    <ClInclude Include="src\rtre.h" />
+    <ClInclude Include="src\rtre_base.h" />
+    <ClInclude Include="src\engine_abstractions\sampler.h" />
+    <ClInclude Include="src\engine_abstractions\shader.h" />
+    <ClInclude Include="src\engine_abstractions\dtypes.h" />
+    <ClInclude Include="src\engine_meshes\mesh.h" />
+    <ClInclude Include="src\engine_resources\default_shaders.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\assimp\color4.inl" />
