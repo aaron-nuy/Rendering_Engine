@@ -21,6 +21,7 @@ namespace rtre {
 	public:
 		Ebo() {
 			glGenBuffers(1, &m_ID);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		}
 		Ebo(Ebo& eb) {
 			m_ID = eb.id();
@@ -56,18 +57,15 @@ namespace rtre {
 		inline void loadData(const std::vector<GLuint>& vertices) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertices.size() * sizeof(GLuint), vertices.data(), GL_STATIC_DRAW);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
 		}
 		template<std::size_t n>
 		inline void loadData(const std::array<GLuint, n>& vertices) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertices.size() * sizeof(GLuint), vertices.data(), GL_STATIC_DRAW);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
 		}
 		inline void loadData(GLuint* vertices, GLsizeiptr size) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
 		}
 
 		inline void bind() {
@@ -125,18 +123,15 @@ namespace rtre {
 		inline void loadData(const std::vector<T>& vertices) {
 			glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(T), vertices.data(), GL_STATIC_DRAW);
-			glBindBuffer(GL_ARRAY_BUFFER, NULL);
 		}
 		template<class T, std::size_t n>
 		inline void loadData(const std::array<T, n>& vertices) {
 			glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(T), vertices.data(), GL_STATIC_DRAW);
-			glBindBuffer(GL_ARRAY_BUFFER, NULL);
 		}
 		inline void loadData(GLfloat* vertices, GLsizeiptr size) {
 			glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 			glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
-			glBindBuffer(GL_ARRAY_BUFFER, NULL);
 		}
 
 		inline void bind() {
@@ -161,6 +156,8 @@ namespace rtre {
 
 		Vao() {
 			glGenVertexArrays(1, &m_ID);
+			glBindVertexArray(m_ID);
+
 		}
 
 		~Vao() {
@@ -173,12 +170,12 @@ namespace rtre {
 
 			NOTE : This function does not bind the Vao, it must be binded before calling it
 		*/
-		inline void linkAttrib(Vbo& pvbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
+		inline void linkAttrib( GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
 
-			pvbo.bind();
+
 			glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
 			glEnableVertexAttribArray(layout);
-			pvbo.unbind();
+
 
 		}
 

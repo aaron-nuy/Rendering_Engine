@@ -3,6 +3,10 @@
 #include "GLFW/ar_WGL.h"
 #include "engine_movement/controller.h"
 
+std::string to_string(glm::vec3 vec) {
+	return std::to_string(vec.x) + " " + std::to_string(vec.y) + " " + std::to_string(vec.z);
+}
+
 int main()
 {
 
@@ -12,22 +16,33 @@ int main()
 	WGLWindow::initHint(GLFW_CONTEXT_VERSION_MINOR,3 );
 	WGLWindow::initHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	WGLWindow window(500, 500,"Hey you");
+	WGLWindow window(1000, 1000,"Hey you");
 	window.makeContextCurrent();
 
 
 
-	rtre::init(500,500,&window);
-	
+	rtre::init(1000, 1000,&window);
+	rtre::enable(GL_DEPTH_TEST);
+	rtre::Model my;
+	try {
+		my.loadModel("blend/backpack.obj");
+	}
+	catch(std::exception& e){
+		std::cout << e.what();
+	}
 
-	while (!window.shouldClose()) {
+
+
+	while (!window.shouldClose() && !window.isKeyPressed(GLFW_KEY_ESCAPE)) {
 		rtre::setBackgroundColor(0.5, 0.1, 0.1,1.0);
-		rtre::clearBuffers(GL_COLOR_BUFFER_BIT);
+		rtre::clearBuffers(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		rtre::camera.updatePerspective();
+		my.draw();
 
-		rtre::controller::control();
-		window.swapBuffers();
 		WGLWindow::pollEvents();
+		window.swapBuffers();
+		rtre::controller::control();
 	}
 
 	WGLWindow::terminate();

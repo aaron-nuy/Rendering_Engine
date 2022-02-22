@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -23,19 +24,19 @@ namespace rtre {
 		GLfloat m_Fov;
 		GLfloat m_AspectRatio;
 
-		vec3 m_Position;
-		vec3 m_Speed = vec3(0, 0.5f, 0);
-		vec3 m_Orientation = vec3(0, 1, 0);
-		mat4 perspectiveM = mat4(1);
-		mat4 viewM = mat4(1);
-		mat4 projectionM = mat4(1);
+		vec3 m_Position = vec3(0.f);
+		vec3 m_Speed = vec3(0.f, 0.01f, 0.f);
+		vec3 m_Orientation = vec3(1.f, 0.f, 0.0f);
+		mat4 perspectiveM = mat4(1.f);
+		mat4 viewM = mat4(1.f);
+		mat4 projectionM = mat4(1.f);
 
 	public:
 
 		Camera operator=(Camera camera){ return camera; }
 
 		Camera(vec3 pos = vec3(0,0,0), GLfloat aspectRatio = 1.0f,GLfloat fov = 75.0f,
-			GLfloat zNear = 0.05f,GLfloat zFar = 500.0f)
+			GLfloat zNear = 0.05f,GLfloat zFar = 5000.0f)
 			:
 			m_Position(pos),
 			m_Fov(fov),
@@ -76,7 +77,7 @@ namespace rtre {
 
 		void moveForward(){ m_Position += m_Speed * m_Orientation; }
 		void moveBackward(){ m_Position -= m_Speed * m_Orientation; }
-		void moveRight(){ m_Position += m_Speed * glm::normalize(glm::cross(m_Orientation, m_UpDirection)); }
+		void moveRight() {m_Position += m_Speed * glm::normalize(glm::cross(m_Orientation, m_UpDirection));}
 		void moveLeft(){ m_Position -= m_Speed * glm::normalize(glm::cross(m_Orientation, m_UpDirection)); }
 		void moveUp(){ m_Position += m_Speed * m_UpDirection; }
 		void moveDown(){ m_Position -= m_Speed * m_UpDirection; }

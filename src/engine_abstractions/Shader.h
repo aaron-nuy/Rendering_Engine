@@ -69,44 +69,44 @@ namespace rtre {
 			}
 		}
 
-		inline GLuint getUnifromID(const char* name) const {
+		inline GLint getUnifromID(const char* name) const {
 			return glGetUniformLocation(m_ID, name);
 		}
 
-		inline void SetUniform(GLuint uniID, mat4 value) {
+		inline void SetUniform(GLint uniID, mat4 value) {
 			glUniformMatrix4fv(uniID, 1, GL_FALSE, glm::value_ptr(value));
 		}
-		inline void SetUniform(GLuint uniID, mat3 value) {
+		inline void SetUniform(GLint uniID, mat3 value) {
 			glUniformMatrix3fv(uniID, 1, GL_FALSE, glm::value_ptr(value));
 		}
-		inline void SetUniform(GLuint uniID, mat2 value) {
+		inline void SetUniform(GLint uniID, mat2 value) {
 			glUniformMatrix2fv(uniID, 1, GL_FALSE, glm::value_ptr(value));
 		}
-		inline void SetUniform(GLuint uniID, GLfloat v1, GLfloat v2) {
+		inline void SetUniform(GLint uniID, GLfloat v1, GLfloat v2) {
 			glUniform2f(uniID, v1, v2);
 		}
-		inline void SetUniform(GLuint uniID, vec2 vec) {
+		inline void SetUniform(GLint uniID, vec2 vec) {
 			glUniform2f(uniID, vec.x, vec.y);
 		}
-		inline void SetUniform(GLuint uniID, GLfloat v1, GLfloat v2, GLfloat v3) {
+		inline void SetUniform(GLint uniID, GLfloat v1, GLfloat v2, GLfloat v3) {
 			glUniform3f(uniID, v1, v2, v3);
 		}
-		inline void SetUniform(GLuint uniID, vec3 vec) {
+		inline void SetUniform(GLint uniID, vec3 vec) {
 			glUniform3f(uniID, vec.x, vec.y, vec.z);
 		}
-		inline void SetUniform(GLuint uniID, GLfloat v1, GLfloat v2, GLfloat v3, GLfloat v4) {
+		inline void SetUniform(GLint uniID, GLfloat v1, GLfloat v2, GLfloat v3, GLfloat v4) {
 			glUniform4f(uniID, v1, v2, v3, v4);
 		}
-		inline void SetUniform(GLuint uniID, vec4 vec) {
+		inline void SetUniform(GLint uniID, vec4 vec) {
 			glUniform4f(uniID, vec.x, vec.y, vec.z, vec.w);
 		}
-		inline void SetUniform(GLuint uniID, GLint value) {
+		inline void SetUniform(GLint uniID, GLint value) {
 			glUniform1i(uniID, value);
 		}
-		inline void SetUniform(GLuint uniID, GLuint value) {
+		inline void SetUniform(GLint uniID, GLuint value) {
 			glUniform1ui(uniID, value);
 		}
-		inline void SetUniform(GLuint uniID, GLfloat value) {
+		inline void SetUniform(GLint uniID, GLfloat value) {
 			glUniform1f(uniID, value);
 		}
 

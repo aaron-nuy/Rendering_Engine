@@ -17,7 +17,7 @@ namespace rtre {
 
 	namespace controller {
 		
-		static rTtime lastTime,crntTime;
+		static rTtime lastTime,crntTime,deltaTime;
 		static const float mSensitivity = 10.0f;
 		static bool firstCall = true;
 		static const glm::vec2 sensitivityModifier(100, 50);
@@ -28,6 +28,7 @@ namespace rtre {
 		void control() {
 
 			crntTime = getTime();
+			deltaTime = crntTime - lastTime;
 
 			if (firstCall) {
 				firstCall = false;
@@ -40,7 +41,10 @@ namespace rtre {
 				auto crntCursorPos_PlaceHolder = eWindow->getCursorPosition();
 				crntCursorPos = glm::vec2(crntCursorPos_PlaceHolder.x(), crntCursorPos_PlaceHolder.y());
 
+
 				cursorDelta = -mSensitivity * ((crntCursorPos - prevCursorPos) / sensitivityModifier);
+
+				camera.setSpeed(vec3(deltaTime*(pow(10,-6))));
 
 				// Guards so camera doesn't get cuckery
 				if ((camera.orientation().y <= -0.99f) && cursorDelta.y < 0) {
