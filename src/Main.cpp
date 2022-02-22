@@ -25,7 +25,7 @@ int main()
 	rtre::enable(GL_DEPTH_TEST);
 	rtre::enable(GL_CULL_FACE);
 	rtre::enable(GL_FRONT);
-	rtre::enable(GL_CCW);
+	rtre::setFrontFace(GL_CCW);
 	rtre::Model my;
 	try {
 		my.loadModel("blend/Nanosuit.obj");

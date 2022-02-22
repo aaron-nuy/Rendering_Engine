@@ -14,11 +14,13 @@ namespace rtre {
 	static GLuint viewportWidth;
 	static GLuint viewportHeight;
 	static WGLWindow* eWindow;
+	static GLfloat aspectRatio = 1;
 
 
 	inline void setViewport(GLuint vWidth, GLuint vHeight) {
 		viewportWidth = vWidth;
 		viewportHeight = vHeight;
+		aspectRatio = viewportWidth / (GLfloat)viewportHeight;
 		glViewport(0, 0, viewportWidth, viewportHeight);
 	}
 

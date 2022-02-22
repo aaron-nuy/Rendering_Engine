@@ -13,6 +13,9 @@ namespace rtre {
         std::shared_ptr<RenderShader> m_Shader;
         std::string directory;
         GLuint slotCounter = 0;
+        mat4 m_Rotate = mat4(1.0f);
+        mat4 m_Transform = mat4(1.0f);
+        GLfloat m_Scale = 1.f;
 
         void processNode(aiNode* node, const aiScene* scene)
         {
@@ -158,9 +161,9 @@ namespace rtre {
             m_Shader->activate();
 
             m_Shader->SetUniform(m_Shader->getUnifromID("perspectiveM"),camera.perspective() );
-            m_Shader->SetUniform(m_Shader->getUnifromID("transformM"), identity);
-            m_Shader->SetUniform(m_Shader->getUnifromID("rotateM"), identity);
-            m_Shader->SetUniform(m_Shader->getUnifromID("scaleV"), 1.1f);
+            m_Shader->SetUniform(m_Shader->getUnifromID("transformM"), m_Transform);
+            m_Shader->SetUniform(m_Shader->getUnifromID("rotateM"), m_Rotate);
+            m_Shader->SetUniform(m_Shader->getUnifromID("scaleV"), m_Scale);
             m_Shader->SetUniform(m_Shader->getUnifromID("aspectRatioV"), 1.f);
 
 

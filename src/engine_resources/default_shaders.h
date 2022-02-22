@@ -23,7 +23,7 @@ namespace rtre { namespace shaders {
 
 		"void main()\n{\n"
 		"TxtCoords = aTxtCoords;\n"
-		"gl_Position =  perspectiveM*vec4(aPos,1.0f); \n"
+		"gl_Position =  perspectiveM*(rotateM*vec4(scaleV*aPos,1.0f)*transformM); \n"
 		"}\n\0";
 
 	static const char* d3Frag =
