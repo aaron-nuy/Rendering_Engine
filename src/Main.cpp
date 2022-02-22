@@ -23,9 +23,12 @@ int main()
 
 	rtre::init(1000, 1000,&window);
 	rtre::enable(GL_DEPTH_TEST);
+	rtre::enable(GL_CULL_FACE);
+	rtre::enable(GL_FRONT);
+	rtre::enable(GL_CCW);
 	rtre::Model my;
 	try {
-		my.loadModel("blend/backpack.obj");
+		my.loadModel("blend/Nanosuit.obj");
 	}
 	catch(std::exception& e){
 		std::cout << e.what();

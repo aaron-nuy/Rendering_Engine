@@ -88,6 +88,7 @@ namespace rtre {
                 }
                 if (!skip)
                 {
+                    
                     std::string crntpath = directory + "/" + str.C_Str();
                     std::shared_ptr<Sampler2D> texture = std::make_shared<Sampler2D>(crntpath.c_str(), slotCounter++);
                     texture->setType(textureType);
@@ -137,7 +138,7 @@ namespace rtre {
         {
             m_Meshes.clear();
             Assimp::Importer import;
-            const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+            const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
             if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
             {
