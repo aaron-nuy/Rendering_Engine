@@ -8,7 +8,7 @@
 #include "engine_abstractions/dtypes.h"
 #include "engine_resources/default_shaders.h"
 #include "engine_rendering/camera.h"
-#include "GLFW/ar_WGL.h"
+#include "GLFW/rtre_Window.h"
 
 namespace rtre {
 	
@@ -34,7 +34,7 @@ namespace rtre {
 	static Camera camera;
 	static GLuint viewportWidth;
 	static GLuint viewportHeight;
-	static WGLWindow* eWindow;
+	static Window* eWindow;
 	static GLfloat aspectRatio = 1;
 	static BasicMesh sphereVertices;
 
@@ -50,14 +50,20 @@ namespace rtre {
 	Initilize glad
 	Must be called after setting window context
 	*/
-	inline void init(GLuint viewportWidth,GLuint viewportHeight, WGLWindow* window,
+	inline void init(GLuint viewportWidth,GLuint viewportHeight, Window& window,
 			const glm::vec3& pos = glm::vec3(0,0,0),GLfloat aspectRatio = 1.0f, 
 			GLfloat fov = 75.0f, GLfloat zNear = 0.05f, GLfloat zFar = 500.0f) {
-		gladLoadGL();
+		if (!gladLoadGL()) {
+			throw std::exception("Could not load glad.\n");
+		}
 
 		setViewport(viewportWidth, viewportHeight);
 
-		texturePlaceholder = std::make_shared<Sampler2D>("engine_resources/textures/placeholder.png",1);
+		
+		texturePlaceholder = std::make_shared<Sampler2D>("engine_resources/textures/placeholder.png", 1);
+		if (!texturePlaceholder) {
+			throw std::exception("Could not create placeholder texture\n");
+		}
 
 		std::array<std::string, 6> cubemapPath = {
 			"engine_resources/skybox_placeholder_textures/right.jpg",
@@ -68,15 +74,23 @@ namespace rtre {
 			"engine_resources/skybox_placeholder_textures/back.jpg"
 		};
 		cubemapPlaceholder = std::make_shared<Sampler3D>(cubemapPath,2);
+		if (!cubemapPlaceholder) {
+			throw std::exception("Could not create placeholder cubemap\n");
+		}
+
 
 		camera = Camera(pos, aspectRatio, fov, zNear, zFar);
 
-		eWindow = window;
+		eWindow = &window;
 		sphereVertices = getVertices("engine_resources/sphere_mesh/globe-sphere.obj");
 		d3Shader = std::make_shared<RenderShader>(shaders::d3Vertex, shaders::d3Frag);
 		d2Shader = std::make_shared<RenderShader>(shaders::d2Vertex, shaders::d2Frag);
 		skyShader = std::make_shared<RenderShader>(shaders::skyVertex, shaders::skyFrag);
 		
+		if (!d3Shader || !d2Shader || !skyShader) {
+			throw std::exception("Could not load one or more shaders.\n");
+		}
+
 	}
 
 
@@ -143,31 +157,18 @@ namespace rtre {
 
 		return t_Mesh;
 	}
-	void processBasicNode(BasicMesh& m,aiNode* node, const aiScene* scene)
-	{
-		for (unsigned int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			m = processBasicMesh(mesh, scene);
-		}
-		for (unsigned int i = 0; i < node->mNumChildren; i++)
-		{
-			processBasicNode(m,node->mChildren[i], scene);
-		}
-	}
 	BasicMesh getVertices(const std::string& path) {
 		Assimp::Importer import;
-		BasicMesh model;
 		const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
-			return model;
+			throw  std::exception("ERROR::ASSIMP:: Could not load basic sphere mesh.\n");
 		}
 
-		processBasicNode(model,scene->mRootNode, scene);
-		return model;
+		aiMesh* mesh = scene->mMeshes[scene->mRootNode->mChildren[0]->mMeshes[0]];
+
+		return processBasicMesh(mesh, scene);
 	}
 
 }

@@ -1,15 +1,15 @@
 #pragma once
 #include <chrono>
-#include "GLFW/ar_WGL.h"
+#include "GLFW/rtre_Window.h"
 #include "../engine_rendering/camera.h"
 #include "../rtre_base.h" 
 
 
 namespace rtre {
 
-	typedef unsigned long long rTtime;
+	typedef uint64_t rTtime;
 
-		rTtime getTime() {
+	rTtime getTime() {
 		using std::chrono::microseconds;
 		using std::chrono::duration_cast;
 		return duration_cast<microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
@@ -39,7 +39,7 @@ namespace rtre {
 			}
 			else {
 				auto crntCursorPos_PlaceHolder = eWindow->getCursorPosition();
-				crntCursorPos = glm::vec2(crntCursorPos_PlaceHolder.x(), crntCursorPos_PlaceHolder.y());
+				crntCursorPos = glm::vec2(crntCursorPos_PlaceHolder.x, crntCursorPos_PlaceHolder.y);
 
 
 				cursorDelta = -mSensitivity * ((crntCursorPos - prevCursorPos) / sensitivityModifier);

@@ -171,12 +171,8 @@ namespace rtre {
 			NOTE : This function does not bind the Vao, it must be binded before calling it
 		*/
 		inline void linkAttrib( GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
-
-
 			glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
 			glEnableVertexAttribArray(layout);
-
-
 		}
 
 		inline void bind() {
