@@ -10,8 +10,10 @@ namespace rtre {
 	
 
 	static std::shared_ptr<RenderShader> d3Shader;
+	static std::shared_ptr<RenderShader> skyShader;
 	static std::shared_ptr<RenderShader> d2Shader;
 	static std::shared_ptr<Sampler2D> texturePlaceholder;
+	static std::shared_ptr<Sampler3D> cubemapPlaceholder;
 	static Camera camera;
 	static GLuint viewportWidth;
 	static GLuint viewportHeight;
@@ -39,12 +41,23 @@ namespace rtre {
 
 		texturePlaceholder = std::make_shared<Sampler2D>("engine_resources/textures/placeholder.png",1);
 
+		std::array<std::string, 6> cubemapPath = {
+			"engine_resources/skybox_placeholder_textures/right.jpg",
+			"engine_resources/skybox_placeholder_textures/left.jpg",
+			"engine_resources/skybox_placeholder_textures/top.jpg",
+			"engine_resources/skybox_placeholder_textures/bottom.jpg",
+			"engine_resources/skybox_placeholder_textures/front.jpg",
+			"engine_resources/skybox_placeholder_textures/back.jpg"
+		};
+		cubemapPlaceholder = std::make_shared<Sampler3D>(cubemapPath,2);
+
 		camera = Camera(pos, aspectRatio, fov, zNear, zFar);
 
 		eWindow = window;
 
 		d3Shader = std::make_shared<RenderShader>(shaders::d3Vertex, shaders::d3Frag);
 		d2Shader = std::make_shared<RenderShader>(shaders::d2Vertex, shaders::d2Frag);
+		skyShader = std::make_shared<RenderShader>(shaders::skyVertex, shaders::skyFrag);
 		
 	}
 

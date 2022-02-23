@@ -4,3 +4,4 @@
 #include "engine_abstractions/dtypes.h"
 #include "engine_resources/default_shaders.h"
 #include "engine_meshes/models.h"
+#include "engine_meshes/skybox.h"

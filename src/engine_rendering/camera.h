@@ -28,6 +28,7 @@ namespace rtre {
 		vec3 m_Speed = vec3(0.f, 0.01f, 0.f);
 		vec3 m_Orientation = vec3(1.f, 0.f, 0.0f);
 		mat4 perspectiveM = mat4(1.f);
+		mat4 skyboxM = mat4(1.f);
 		mat4 viewM = mat4(1.f);
 		mat4 projectionM = mat4(1.f);
 
@@ -50,6 +51,11 @@ namespace rtre {
 		{
 			perspectiveM = glm::perspective(glm::radians(m_Fov), m_AspectRatio, nearPlane, farPlane) 
 				* glm::lookAt(m_Position, m_Position + m_Orientation, m_UpDirection);
+
+
+			skyboxM = glm::perspective(glm::radians(m_Fov), m_AspectRatio, nearPlane, farPlane)
+				* glm::mat4(glm::mat3(glm::lookAt(m_Position, m_Position + m_Orientation, m_UpDirection)));
+
 		}
 		inline void updatePerspective(GLfloat aspectRatio ,GLfloat fov = 75.0f,
 			GLfloat zNear = 0.05f, GLfloat zFar = 500.0f) {
@@ -61,6 +67,9 @@ namespace rtre {
 
 			perspectiveM = glm::perspective(glm::radians(m_Fov), m_AspectRatio, nearPlane, farPlane)
 				* glm::lookAt(m_Position, m_Position + m_Orientation, m_UpDirection);
+
+			skyboxM = glm::perspective(glm::radians(m_Fov), m_AspectRatio, nearPlane, farPlane)
+				* glm::mat4(glm::mat3(glm::lookAt(m_Position, m_Position + m_Orientation, m_UpDirection)));
 
 		}
 
@@ -85,5 +94,6 @@ namespace rtre {
 		void moveBackwardFPS(){ m_Position -= m_Speed * glm::normalize(glm::vec3(m_Orientation.x, 0.0f, m_Orientation.z)); }
 
 		const mat4& perspective() const { return perspectiveM; }
+		const mat4& skyboxPers() const { return skyboxM; }
 	};
 }

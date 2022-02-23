@@ -107,6 +107,8 @@ namespace rtre {
 	};
 
 	class Sampler3D : public Sampler {
+	public:
+
 		Sampler3D(const std::array<std::string,6>& mapsides,GLuint unit,Senum type = rTdiffuse)
 		{
 			m_Unit = unit;

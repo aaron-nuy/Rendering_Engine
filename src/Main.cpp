@@ -28,13 +28,13 @@ int main()
 	rtre::setFrontFace(GL_CCW);
 
 	rtre::Cube my;
-
+	rtre::Skybox msky;
 	while (!window.shouldClose() && !window.isKeyPressed(GLFW_KEY_ESCAPE)) {
 		rtre::setBackgroundColor(0.5, 0.1, 0.1,1.0);
 		rtre::clearBuffers(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		rtre::camera.updatePerspective();
 		my.draw();
-
+		msky.draw();
 		WGLWindow::pollEvents();
 		window.swapBuffers();
 		rtre::controller::control();

@@ -3,6 +3,39 @@
 
 namespace rtre { namespace shaders {
 
+	static const char* skyVertex = 
+		"#version 430 core\n"
+
+		"layout (location = 0) in vec3 aPos; \n"
+
+		"out vec4 TxtCoords;\n"
+
+		"uniform mat4 perspectiveM;\n"
+		"uniform float scaleV;\n"
+		"uniform float aspectRatioV;\n"
+
+
+		"void main()\n{\n"
+		"TxtCoords = vec4(aPos.x,aPos.y,-aPos.z,1.0f);\n"
+		"gl_Position =  perspectiveM*vec4(aPos,5.0f); \n"
+		"}\n\0";;
+
+	static const char* skyFrag = 
+		"#version 430 core\n"
+
+		"out vec4 FragColor;\n"
+
+		"in vec4 TxtCoords;\n"
+
+		"uniform samplerCube diffuse;\n"
+		"uniform samplerCube specular;\n"
+		"uniform samplerCube normal;\n"
+		"uniform samplerCube height;\n"
+
+		"void main()\n{\n"
+		"FragColor = texture(diffuse,TxtCoords.xyz);\n"
+		"}\n\0";
+
 	static const char* d3Vertex =
 		"#version 430 core\n"
 
