@@ -11,14 +11,14 @@ namespace rtre { namespace shaders {
 		"out vec4 TxtCoords;\n"
 
 		"uniform mat4 perspectiveM;\n"
-		"uniform float scaleV;\n"
+		"uniform vec4 scaleV;\n"
 		"uniform float aspectRatioV;\n"
 
 
 		"void main()\n{\n"
 		"TxtCoords = vec4(aPos.x,aPos.y,-aPos.z,1.0f);\n"
 		"vec4 pos = perspectiveM*vec4(aPos,1.0f);\n"
-		"gl_Position =  vec4(pos.x,pos.y,pos.w,pos.w); \n"
+		"gl_Position =  scaleV*vec4(pos.x,pos.y,pos.w,pos.w); \n"
 		"}\n\0";;
 
 	static const char* skyFrag = 
@@ -46,10 +46,10 @@ namespace rtre { namespace shaders {
 		"out vec2 TxtCoords;\n"
 
 		"uniform mat4 perspectiveM;\n"
-		"uniform mat4 transformM;\n"
 		"uniform mat4 rotateM;\n"
-		"uniform float scaleV;\n"
+		"uniform vec4 scaleV;\n"
 		"uniform float aspectRatioV;\n"
+		"uniform vec3 positionV;\n"
 
 		"vec4 scaleView(float ratio){\n"
 		"return ( int(ratio > 1 ) * vec4( 1.0f/ratio, 1.0f, 1.0f, 1.0f )"
@@ -57,7 +57,7 @@ namespace rtre { namespace shaders {
 
 		"void main()\n{\n"
 		"TxtCoords = aTxtCoords;\n"
-		"gl_Position =  perspectiveM*(rotateM*vec4(scaleV*aPos,1.0f)*transformM); \n"
+		"gl_Position =  perspectiveM*(rotateM*(vec4(positionV,0)+scaleV*vec4(aPos,1.0f))); \n"
 		"}\n\0";
 
 	static const char* d3Frag =
@@ -84,9 +84,9 @@ namespace rtre { namespace shaders {
 
 		"out vec2 TxtCoords;\n"
 
-		"uniform mat4 transformM;\n"
 		"uniform mat4 rotateM;\n"
-		"uniform float scaleV;\n"
+		"uniform vec4 scaleV;\n"
+		"uniform vec2 positionV;\n"
 		"uniform float aspectRatioV;\n"
 
 		"vec4 scaleView(float ratio){\n"
@@ -96,7 +96,7 @@ namespace rtre { namespace shaders {
 		"void main()\n{\n"
 		"TxtCoords = aTxtCoords;\n"
 
-		"gl_Position = transformM*(scaleV * (rotateM*vec4(aPos,0.0f,1.0f)) * scaleView(aspectRatioV)); \n"
+		"gl_Position = (rotateM*(vec4(positionV,0.f,0.f)+scaleV*vec4(aPos,0.0f,1.0f))) * scaleView(aspectRatioV); \n"
 		"}\n\0";
 
 	static const char* d2Frag =

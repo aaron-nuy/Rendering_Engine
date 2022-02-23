@@ -83,6 +83,10 @@ namespace rtre {
 		void setOrientation(const vec3& porientation) { m_Orientation = glm::normalize(porientation); }
 		void setPosition(const vec3& pposition) { m_Position = pposition; }
 		void setPositionY(GLfloat yposition) { m_Position.y = yposition; }
+		/*
+			In Degrees
+		*/
+		void setFov(GLfloat fov) { m_Fov = fov; }
 
 		void moveForward(){ m_Position += m_Speed * m_Orientation; }
 		void moveBackward(){ m_Position -= m_Speed * m_Orientation; }

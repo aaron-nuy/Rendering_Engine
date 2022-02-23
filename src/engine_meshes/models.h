@@ -7,14 +7,14 @@
 namespace rtre {
     
 
-    class Model {
+
+    class AModel {
     protected:
         std::shared_ptr<RenderShader> m_Shader;
 
         mat4 m_Rotate = mat4(1.f);
-        mat4 m_Transform = mat4(1.f);
-        GLfloat m_Scale = 1.f;
-
+        vec4 m_Scale = vec4(1);
+        vec3 m_Position = vec3(0);
         virtual void draw() = 0;
         
     public:
@@ -22,15 +22,19 @@ namespace rtre {
         virtual void rotate(GLfloat angle, vec3 axis = vec3(0.f, 1.f, 0.f)) final {
             m_Rotate = glm::rotate(angle, axis);
         }
-        virtual void scale(GLfloat scalev) final {
-            m_Scale = scalev;
+        virtual void scale(GLfloat scale) final {
+            m_Scale = vec4(scale, scale, scale,1);
         }
-        virtual void move(vec3 coords) final {
-            m_Transform = glm::translate(coords);
+        virtual void scale(glm::vec3 scalev) final {
+            m_Scale = vec4(scalev, 1);
+        }
+        virtual void setPosition(vec3 coords) final {
+            m_Position = coords;
         }
     };
 
-    class LModel : public Model {
+    class Model : public AModel {
+
 
         std::vector<std::shared_ptr<Mesh>> m_Meshes;
         std::vector<std::shared_ptr<Sampler2D>> loaded_Textures;
@@ -125,32 +129,32 @@ namespace rtre {
 
     public:
 
-        LModel() {
+        Model() {
             m_Shader = d3Shader;
         }
-        LModel(std::shared_ptr<RenderShader> shader)
+        Model(std::shared_ptr<RenderShader> shader)
         {
             m_Shader = shader;
         }
-        LModel(const std::string& path, std::shared_ptr<RenderShader> shader)
+        Model(const std::string& path, std::shared_ptr<RenderShader> shader)
         {
             m_Shader = shader;
             loadModel(path);
         }
-        LModel(const std::string& path)
+        Model(const std::string& path)
         {
             m_Shader = d3Shader;
            
             loadModel(path);
 
         }
-        LModel(const std::string& path,const char* vertexShaderPath, const char* fragShaderPath,
+        Model(const std::string& path,const char* vertexShaderPath, const char* fragShaderPath,
             const char* geometryShaderPath = nullptr)
         {
             m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
             loadModel(path);
         }
-        LModel(const char* vertexShaderPath, const char* fragShaderPath,
+        Model(const char* vertexShaderPath, const char* fragShaderPath,
             const char* geometryShaderPath = nullptr)
         {
             m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
@@ -179,10 +183,11 @@ namespace rtre {
             m_Shader->activate();
 
             m_Shader->SetUniform(m_Shader->getUnifromID("perspectiveM"),camera.perspective() );
-            m_Shader->SetUniform(m_Shader->getUnifromID("transformM"), m_Transform);
             m_Shader->SetUniform(m_Shader->getUnifromID("rotateM"), m_Rotate);
             m_Shader->SetUniform(m_Shader->getUnifromID("scaleV"), m_Scale);
+            m_Shader->SetUniform(m_Shader->getUnifromID("positionV"), m_Position);
             m_Shader->SetUniform(m_Shader->getUnifromID("aspectRatioV"), aspectRatio);
+
 
 
             for (auto& mesh : m_Meshes)
@@ -190,7 +195,7 @@ namespace rtre {
         }
     };
 
-    class BModel : public Model {
+    class BModel : public AModel {
     protected:
         std::shared_ptr<Mesh> m_Mesh;
         std::shared_ptr<RenderShader> m_Shader;
@@ -205,9 +210,9 @@ namespace rtre {
             m_Shader->activate();
 
             m_Shader->SetUniform(m_Shader->getUnifromID("perspectiveM"), camera.perspective());
-            m_Shader->SetUniform(m_Shader->getUnifromID("transformM"), m_Transform);
             m_Shader->SetUniform(m_Shader->getUnifromID("rotateM"), m_Rotate);
             m_Shader->SetUniform(m_Shader->getUnifromID("scaleV"), m_Scale);
+            m_Shader->SetUniform(m_Shader->getUnifromID("positionV"), m_Position);
             m_Shader->SetUniform(m_Shader->getUnifromID("aspectRatioV"), aspectRatio);
 
             m_Mesh->draw(m_Shader);
@@ -216,7 +221,7 @@ namespace rtre {
 
     class Cube : public BModel {
 
-        static const std::vector<Vertex3> s_Vetices;
+        static const std::vector<Vertex3> s_Vertices;
 
         static const std::vector<GLuint> s_Indices;
 
@@ -225,42 +230,132 @@ namespace rtre {
 
         Cube() {
             m_Shader = d3Shader;
-            m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
         }
-        Cube(std::shared_ptr<RenderShader> shader)
+
+        Cube(const vec3& position, const vec3& scale = vec3(1))
         {
-            m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+            m_Position = position;
+            m_Scale = vec4(scale,1);
+
+            m_Shader = d3Shader;
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+            
+        }
+        Cube(std::shared_ptr<RenderShader> shader, 
+            const vec3& position = vec3(0), const vec3& scale = vec3(1))
+        {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
             m_Shader = shader;
         }
-        Cube(const std::string& texture, std::shared_ptr<RenderShader> shader)
+        Cube(const std::string& texture, std::shared_ptr<RenderShader> shader, 
+            const vec3& position = vec3(0), const vec3& scale = vec3(1))
         {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+
             m_Shader = shader;
-            m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
 
         }
-        Cube(const std::string& texture)
+        Cube(const std::string& texture,const vec3& position = vec3(0), const vec3& scale = vec3(1))
         {
             m_Shader = d3Shader;
-
-            m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
 
         }
         Cube(const std::string& texture, const char* vertexShaderPath, const char* fragShaderPath,
-            const char* geometryShaderPath = nullptr)
+            const char* geometryShaderPath = nullptr, const vec3& position = vec3(0), const vec3& scale = vec3(1))
         {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
             m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
-            m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
         }
         Cube(const char* vertexShaderPath, const char* fragShaderPath,
-            const char* geometryShaderPath = nullptr)
+            const char* geometryShaderPath = nullptr, const vec3& position = vec3(0), const vec3& scale = vec3(1))
         {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
             m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
-            m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
         }
 
     };
 
-    const std::vector<Vertex3> Cube::s_Vetices = {
+    class Sphere : public BModel{
+
+        std::vector<Vertex3> s_Vertices = sphereVertices.vertices;
+        std::vector<GLuint> s_Indices = sphereVertices.indices;
+
+    public:
+
+        Sphere() {
+            m_Shader = d3Shader;
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+        }
+        Sphere(const vec3& position, const vec3& scale = vec3(1))
+        {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+
+            m_Shader = d3Shader;
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+
+        }
+        Sphere(std::shared_ptr<RenderShader> shader,
+            const vec3& position = vec3(0), const vec3& scale = vec3(1))
+        {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+            m_Shader = shader;
+        }
+        Sphere(const std::string& texture, std::shared_ptr<RenderShader> shader,
+            const vec3& position = vec3(0), const vec3& scale = vec3(1))
+        {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+
+            m_Shader = shader;
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
+
+        }
+        Sphere(const std::string& texture, const vec3& position = vec3(0), const vec3& scale = vec3(1))
+        {
+            m_Shader = d3Shader;
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
+
+        }
+        Sphere(const std::string& texture, const char* vertexShaderPath, const char* fragShaderPath,
+            const char* geometryShaderPath = nullptr, const vec3& position = vec3(0), const vec3& scale = vec3(1))
+        {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+            m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {std::make_shared<Sampler2D>(texture.c_str(), 1)});
+        }
+        Sphere(const char* vertexShaderPath, const char* fragShaderPath,
+            const char* geometryShaderPath = nullptr, const vec3& position = vec3(0), const vec3& scale = vec3(1))
+        {
+            m_Position = position;
+            m_Scale = vec4(scale, 1);
+            m_Shader = std::make_shared<RenderShader>(vertexShaderPath, fragShaderPath, geometryShaderPath);
+            m_Mesh->load(s_Vertices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
+        }
+
+
+    };
+
+    const std::vector<Vertex3> Cube::s_Vertices = {
         Vertex3{glm::vec3(-0.5f,-0.5f, 0.5f), glm::vec2(1, 1)},	   //0  
         Vertex3{glm::vec3( 0.5f,-0.5f, 0.5f), glm::vec2(0, 1)},    //1 
         Vertex3{glm::vec3( 0.5f,-0.5f,-0.5f), glm::vec2(0, 0)},    //2  Bottom
@@ -291,7 +386,6 @@ namespace rtre {
         Vertex3{glm::vec3( 0.5f, 0.5f,-0.5f), glm::vec2(1, 1)},		//2 22
         Vertex3{glm::vec3( 0.5f, 0.5f, 0.5f), glm::vec2(1, 0)}		//3 23
     };
-
     const std::vector<GLuint> Cube::s_Indices = {
         2,1,0,
         0,3,2, // Bottom

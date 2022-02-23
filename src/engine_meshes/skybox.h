@@ -8,6 +8,7 @@ namespace rtre {
 	class Skybox {
 		std::vector<std::shared_ptr<Sampler3D>> m_CubeMaps;
 		std::shared_ptr<RenderShader> m_Shader;
+		vec4 m_Scale = vec4(1);
 
 		static const std::vector<Vertex3> m_Vertices;
 		static const std::vector<GLuint> m_Indices;
@@ -86,6 +87,7 @@ namespace rtre {
 			}
 
 			m_Shader->SetUniform(m_Shader->getUnifromID("perspectiveM"), camera.skyboxPers());
+			m_Shader->SetUniform(m_Shader->getUnifromID("scaleV"), m_Scale);
 			m_Shader->SetUniform(m_Shader->getUnifromID("aspectRatioV"), aspectRatio);
 
 			glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);

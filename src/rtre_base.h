@@ -1,13 +1,30 @@
 #pragma once
 #include <memory>
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 #include "engine_abstractions/shader.h"
 #include "engine_abstractions/sampler.h"
+#include "engine_abstractions/dtypes.h"
 #include "engine_resources/default_shaders.h"
 #include "engine_rendering/camera.h"
 #include "GLFW/ar_WGL.h"
 
 namespace rtre {
 	
+	struct BasicMesh {
+		std::vector<Vertex3> vertices;
+		std::vector<GLuint> indices;
+
+		BasicMesh(){}
+
+		BasicMesh(std::vector<Vertex3>& verts, std::vector<GLuint>& inds)
+			:
+			vertices(verts),
+			indices(inds)
+		{}
+	};
+	BasicMesh getVertices(const std::string& path);
 
 	static std::shared_ptr<RenderShader> d3Shader;
 	static std::shared_ptr<RenderShader> skyShader;
@@ -19,6 +36,7 @@ namespace rtre {
 	static GLuint viewportHeight;
 	static WGLWindow* eWindow;
 	static GLfloat aspectRatio = 1;
+	static BasicMesh sphereVertices;
 
 
 	inline void setViewport(GLuint vWidth, GLuint vHeight) {
@@ -54,7 +72,7 @@ namespace rtre {
 		camera = Camera(pos, aspectRatio, fov, zNear, zFar);
 
 		eWindow = window;
-
+		sphereVertices = getVertices("engine_resources/sphere_mesh/globe-sphere.obj");
 		d3Shader = std::make_shared<RenderShader>(shaders::d3Vertex, shaders::d3Frag);
 		d2Shader = std::make_shared<RenderShader>(shaders::d2Vertex, shaders::d2Frag);
 		skyShader = std::make_shared<RenderShader>(shaders::skyVertex, shaders::skyFrag);
@@ -92,4 +110,64 @@ namespace rtre {
 	void clearBuffers(int glflags) {
 		glClear(glflags);
 	}
+
+
+	BasicMesh processBasicMesh(aiMesh* mesh, const aiScene* scene)
+	{
+		std::vector<Vertex3> t_vertices;
+		std::vector<GLuint> t_indices;
+
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		{
+			Vertex3 vertex;
+			vertex.position = vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+			if (mesh->mTextureCoords[0])
+			{
+				vertex.txtCoord = vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+			}
+			else {
+				vertex.txtCoord = glm::vec2(0.f);
+			}
+
+			t_vertices.push_back(vertex);
+		}
+		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+
+			for (unsigned int j = 0; j < face.mNumIndices; j++)
+				t_indices.push_back(face.mIndices[j]);
+		}
+
+		BasicMesh t_Mesh(t_vertices, t_indices);
+
+		return t_Mesh;
+	}
+	void processBasicNode(BasicMesh& m,aiNode* node, const aiScene* scene)
+	{
+		for (unsigned int i = 0; i < node->mNumMeshes; i++)
+		{
+			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+			m = processBasicMesh(mesh, scene);
+		}
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+		{
+			processBasicNode(m,node->mChildren[i], scene);
+		}
+	}
+	BasicMesh getVertices(const std::string& path) {
+		Assimp::Importer import;
+		BasicMesh model;
+		const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+			return model;
+		}
+
+		processBasicNode(model,scene->mRootNode, scene);
+		return model;
+	}
+
 }
