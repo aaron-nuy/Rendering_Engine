@@ -26,14 +26,8 @@ int main()
 	rtre::enable(GL_CULL_FACE);
 	rtre::enable(GL_FRONT);
 	rtre::setFrontFace(GL_CCW);
-	rtre::Model my;
-	try {
-		my.loadModel("blend/Nanosuit.obj");
-	}
-	catch(std::exception& e){
-		std::cout << e.what();
-	}
 
+	rtre::Cube my;
 
 
 	while (!window.shouldClose() && !window.isKeyPressed(GLFW_KEY_ESCAPE)) {

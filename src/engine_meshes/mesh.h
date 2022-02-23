@@ -9,30 +9,16 @@
 
 namespace rtre {
 
-	class AbstractMesh {
-	protected:
+	class Mesh{
 		std::vector<GLuint> m_Indices;
 		std::vector<Vertex3> m_Vertices;
 		std::vector<std::shared_ptr<Sampler2D>> m_Textures;
 		Vao m_Vao;
 		Vbo m_Vbo;
 		Ebo m_Ebo;
-
-
 	public:
 
-		inline std::vector<GLuint>& indices() { return m_Indices; }
-		inline std::vector<Vertex3>& vertices() { return m_Vertices; }
-		inline std::vector<std::shared_ptr<Sampler2D>>& textures() { return m_Textures; }
-		
-		virtual void draw() = 0;
-		virtual void draw_instanced(){}
-
-	};
-
-	class Mesh : public AbstractMesh{
-
-	public:
+		Mesh(){}
 
 		Mesh(const std::vector<Vertex3>& vertices, const std::vector<GLuint>& indices, 
 			const std::vector<std::shared_ptr<Sampler2D>>& textures)
@@ -51,12 +37,28 @@ namespace rtre {
 			m_Ebo.unbind();
 		}
 
+		void load(const std::vector<Vertex3>& vertices, const std::vector<GLuint>& indices,
+			const std::vector<std::shared_ptr<Sampler2D>>& textures) {
+			m_Vertices = vertices;
+			m_Indices = indices;
+			m_Textures = textures;
 
-		virtual void draw() override {
-
+			m_Vao.bind();
+			m_Vbo.loadData(vertices);
+			m_Ebo.loadData(indices);
+			m_Vao.linkAttrib(0, 3, GL_FLOAT, sizeof(Vertex3), (void*)0);
+			m_Vao.linkAttrib(1, 2, GL_FLOAT, sizeof(Vertex3), (void*)(sizeof(glm::vec3)));
+			m_Vao.unbind();
+			m_Vbo.unbind();
+			m_Ebo.unbind();
 		}
 
-		virtual void draw(std::shared_ptr<RenderShader>& shader)  {
+		inline std::vector<GLuint>& indices() { return m_Indices; }
+		inline std::vector<Vertex3>& vertices() { return m_Vertices; }
+		inline std::vector<std::shared_ptr<Sampler2D>>& textures() { return m_Textures; }
+
+
+		inline void draw(std::shared_ptr<RenderShader>& shader)  {
 
 			m_Vao.bind();
 
@@ -76,7 +78,6 @@ namespace rtre {
 
 			glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 
-			m_Vao.unbind();
 		}
 	};
 
