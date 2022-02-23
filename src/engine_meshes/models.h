@@ -17,6 +17,7 @@ namespace rtre {
 
         virtual void draw() = 0;
         
+    public:
         // Angle must be in radians
         virtual void rotate(GLfloat angle, vec3 axis = vec3(0.f, 1.f, 0.f)) final {
             m_Rotate = glm::rotate(angle, axis);
@@ -226,7 +227,6 @@ namespace rtre {
             m_Shader = d3Shader;
             m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
         }
-
         Cube(std::shared_ptr<RenderShader> shader)
         {
             m_Mesh->load(s_Vetices, s_Indices, std::vector<std::shared_ptr<Sampler2D>> {texturePlaceholder});
@@ -261,34 +261,55 @@ namespace rtre {
     };
 
     const std::vector<Vertex3> Cube::s_Vetices = {
-        Vertex3(vec3(-0.5f,-0.5f, 0.5f),vec2( 0.f, 0.f)), // 0
-        Vertex3(vec3( 0.5f,-0.5f, 0.5f),vec2( 0.f, 1.f)), // 1
-        Vertex3(vec3( 0.5f, 0.5f, 0.5f),vec2( 1.f, 1.f)), // 2
-        Vertex3(vec3(-0.5f, 0.5f, 0.5f),vec2( 1.f, 0.f)), // 3
-        Vertex3(vec3( 0.5f,-0.5f,-0.5f),vec2( 1.f, 1.f)), // 4 Bot back right
-        Vertex3(vec3( 0.5f, 0.5f,-0.5f),vec2( 3.f, 3.f)), // 5 Top back right
-        Vertex3(vec3(-0.5f, 0.5f,-0.5f),vec2( 1.f, 1.f)), // 6 Tot back left
-        Vertex3(vec3(-0.5f,-0.5f,-0.5f),vec2( 0.f, 1.f))  // 7 Bot back left
+        Vertex3{glm::vec3(-0.5f,-0.5f, 0.5f), glm::vec2(1, 1)},	   //0  
+        Vertex3{glm::vec3( 0.5f,-0.5f, 0.5f), glm::vec2(0, 1)},    //1 
+        Vertex3{glm::vec3( 0.5f,-0.5f,-0.5f), glm::vec2(0, 0)},    //2  Bottom
+        Vertex3{glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(1, 0)},    //3 
+
+        Vertex3{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec2(0, 1)},     //0 Left 4
+        Vertex3{glm::vec3(-0.5f,-0.5f, 0.5f), glm::vec2(0, 0)},		//1 5
+        Vertex3{glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(1, 0)},		//2 6
+        Vertex3{glm::vec3(-0.5f, 0.5f,-0.5f), glm::vec2(1, 1)},		//3 7
+
+        Vertex3{glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec2(1, 0)}, 	//0 8
+        Vertex3{glm::vec3( 0.5f,-0.5f,-0.5f), glm::vec2(0, 0)},		//1 9
+        Vertex3{glm::vec3( 0.5f, 0.5f,-0.5f), glm::vec2(0, 1)},		//2 Back 10
+        Vertex3{glm::vec3(-0.5f, 0.5f,-0.5f), glm::vec2(1, 1)},		//3 11
+
+        Vertex3{glm::vec3( 0.5f, 0.5f,-0.5f), glm::vec2(1, 1)}, 	//0 12
+        Vertex3{glm::vec3( 0.5f,-0.5f,-0.5f), glm::vec2(1, 0)},		//1 13
+        Vertex3{glm::vec3( 0.5f,-0.5f, 0.5f), glm::vec2(0, 0)},		//2 14
+        Vertex3{glm::vec3( 0.5f, 0.5f, 0.5f), glm::vec2(0, 1)},		//3 Right 15
+
+        Vertex3{glm::vec3( 0.5f, 0.5f, 0.5f), glm::vec2(1, 1)},     //0	16	  																										  
+        Vertex3{glm::vec3( 0.5f,-0.5f, 0.5f), glm::vec2(1, 0)},		//1 17
+        Vertex3{glm::vec3(-0.5f,-0.5f, 0.5f), glm::vec2(0, 0)},		//2 18
+        Vertex3{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec2(0, 1)},		//3 Front 19
+
+        Vertex3{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec2(0, 0)},		//0 Top 20
+        Vertex3{glm::vec3(-0.5f, 0.5f,-0.5f), glm::vec2(0, 1)},		//1 21
+        Vertex3{glm::vec3( 0.5f, 0.5f,-0.5f), glm::vec2(1, 1)},		//2 22
+        Vertex3{glm::vec3( 0.5f, 0.5f, 0.5f), glm::vec2(1, 0)}		//3 23
     };
 
     const std::vector<GLuint> Cube::s_Indices = {
-        0,1,2,
-        2,3,0, // Front
+        2,1,0,
+        0,3,2, // Bottom
 
-        3,2,5,
-        5,6,3, // Top
+        6,5,4,
+        4,7,6, // Left
 
-        7,4,1,
-        1,0,7, // Bottom
+        10,9,8,
+        8,11,10, // Back
 
-        1,4,5,
-        5,2,1, // Right
+        14,13,12,
+        12,15,14, // Right
 
-        7,0,3,
-        3,6,7, // Left
+        18,17,16,
+        16,19,18, // Front
 
-        4,7,6,
-        6,5,4  // Back
+        22,21,20,
+        20,23,22  // Top
 
     };
 
