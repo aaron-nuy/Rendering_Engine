@@ -17,7 +17,8 @@ namespace rtre { namespace shaders {
 
 		"void main()\n{\n"
 		"TxtCoords = vec4(aPos.x,aPos.y,-aPos.z,1.0f);\n"
-		"gl_Position =  perspectiveM*vec4(aPos,5.0f); \n"
+		"vec4 pos = perspectiveM*vec4(aPos,1.0f);\n"
+		"gl_Position =  vec4(pos.x,pos.y,pos.w,pos.w); \n"
 		"}\n\0";;
 
 	static const char* skyFrag = 
