@@ -60,12 +60,12 @@ namespace rtre {
 		vec3 diffuse = vec3(1, 1, 1);
 		vec3 specular = vec3(1, 1, 1);
 
-		GLfloat constant = 1.f;
-		GLfloat linear = 1.f;
-		GLfloat quadratic = 2.f;
+		GLfloat constant = 0.8;
+		GLfloat linear = 0.02f;
+		GLfloat quadratic = 0.032f;
 
 		PointLight(vec3 pos, vec3 dif, vec3 spec = vec3(1.f, 1.f, 1.f),
-			GLfloat cons = 1, GLfloat lin = 1, GLfloat quad = 2.f);
+			GLfloat cons = 0.8, GLfloat lin = 0.02f, GLfloat quad = 0.032f);
 
 		~PointLight();
 

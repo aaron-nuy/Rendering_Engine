@@ -97,14 +97,16 @@ namespace rtre { namespace shaders {
 		"void main()\n{\n"
 
 		"vec4 totallight;"
-		"float ambient = 0.1f;"
+		"float ambient = 0.04f;"
 		"for(unsigned int i=0;i<nPointLights;i++){\n"
 		"	vec3 lightDirection = pointLights[i].position - vPosition;\n"
 		"	float Distance = length(lightDirection); "
 		"	Distance = 0.4*pow(Distance,2)+ 0.13f*Distance + 1.00f;"
 		"	vec3 lightVector = normalize(lightDirection);"
 		"	float diffuseModifier = max(dot(Normal, lightVector), 0.0f);"
-		"	totallight = totallight + vec4((pointLights[i].diffuse * diffuseModifier)*0.5/Distance,1.0f);"
+		"	float attenuation = 1.0 / (pointLights[i].constant + pointLights[i].linear * Distance + "
+		"	pointLights[i].quadratic * (Distance * Distance));   "
+		"	totallight = totallight + vec4(attenuation*pointLights[i].diffuse,0);"
 		"}\n"
 
 		"FragColor = (totallight+vec4(ambient))*texture(diffuse,TxtCoords);\n"
