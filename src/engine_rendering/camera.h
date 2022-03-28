@@ -36,22 +36,23 @@ namespace rtre {
 
 		Camera operator=(Camera camera){ return camera; }
 
-		Camera(vec3 pos = vec3(0,0,0), GLfloat aspectRatio = 1.0f,GLfloat fov = 75.0f,
-			GLfloat zNear = 0.05f,GLfloat zFar = 5000.0f)
+		Camera(vec3 pos = vec3(0, 0, 0), GLfloat aspectRatio = 1.0f, GLfloat fov = 75.0f,
+			GLfloat zNear = 0.05f, GLfloat zFar = 5000.0f)
 			:
 			m_Position(pos),
 			m_Fov(fov),
-			m_AspectRatio(aspectRatio),
 			nearPlane(zNear),
-			farPlane(zFar)	
+			farPlane(zFar),
+			m_AspectRatio(aspectRatio)
 		{
 		}
+
+		inline void setAspectRatio(GLfloat aspectRatio) { m_AspectRatio = aspectRatio; }
 
 		inline void updatePerspective() 
 		{
 			perspectiveM = glm::perspective(glm::radians(m_Fov), m_AspectRatio, nearPlane, farPlane) 
 				* glm::lookAt(m_Position, m_Position + m_Orientation, m_UpDirection);
-
 
 			skyboxM = glm::perspective(glm::radians(m_Fov), m_AspectRatio, nearPlane, farPlane)
 				* glm::mat4(glm::mat3(glm::lookAt(m_Position, m_Position + m_Orientation, m_UpDirection)));

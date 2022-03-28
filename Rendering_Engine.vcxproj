@@ -499,6 +499,7 @@
     <ClInclude Include="src\engine_abstractions\dependencies\stb_image.h" />
     <ClInclude Include="src\engine_abstractions\dependencies\stb_image_write.h" />
     <ClInclude Include="src\engine_meshes\models.h" />
+    <ClInclude Include="src\engine_meshes\polygone.h" />
     <ClInclude Include="src\engine_meshes\skybox.h" />
     <ClInclude Include="src\engine_movement\controller.h" />
     <ClInclude Include="src\engine_rendering\camera.h" />
@@ -653,6 +654,9 @@
     <None Include="include\glm\gtx\vector_angle.inl" />
     <None Include="include\glm\gtx\vector_query.inl" />
     <None Include="include\glm\gtx\wrap.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\engine_resources\textures\placeholder.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

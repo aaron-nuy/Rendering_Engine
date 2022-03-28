@@ -41,8 +41,8 @@ namespace rtre {
 			loadSkybox();
 		}
 		Skybox(const std::array<std::string,6>& textures) {
-			m_CubeMaps.push_back(std::make_shared<Sampler3D>(textures,2));
 			m_Shader = skyShader;
+			m_CubeMaps.push_back(std::make_shared<Sampler3D>(textures,2));
 			loadSkybox();
 		}
 		Skybox(const std::array<std::string, 6>& textures, std::shared_ptr<RenderShader> shader) {

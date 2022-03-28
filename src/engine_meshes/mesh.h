@@ -32,6 +32,7 @@ namespace rtre {
 			m_Ebo.loadData(indices);
 			m_Vao.linkAttrib(0, 3, GL_FLOAT, sizeof(Vertex3), (void*)0);
 			m_Vao.linkAttrib(1, 2, GL_FLOAT, sizeof(Vertex3), (void*)(sizeof(glm::vec3)));
+			m_Vao.linkAttrib(2, 3, GL_FLOAT, sizeof(Vertex3), (void*)(sizeof(glm::vec3)+sizeof(glm::vec2)));
 			m_Vao.unbind();
 			m_Vbo.unbind();
 			m_Ebo.unbind();
@@ -48,6 +49,7 @@ namespace rtre {
 			m_Ebo.loadData(indices);
 			m_Vao.linkAttrib(0, 3, GL_FLOAT, sizeof(Vertex3), (void*)0);
 			m_Vao.linkAttrib(1, 2, GL_FLOAT, sizeof(Vertex3), (void*)(sizeof(glm::vec3)));
+			m_Vao.linkAttrib(2, 3, GL_FLOAT, sizeof(Vertex3), (void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 			m_Vao.unbind();
 			m_Vbo.unbind();
 			m_Ebo.unbind();

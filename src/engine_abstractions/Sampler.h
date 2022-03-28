@@ -99,6 +99,60 @@ namespace rtre {
 			}
 		}
 
+		Sampler2D(const std::string& texture, GLuint unit, Senum type = rTdiffuse)
+		{
+			const char* image = texture.c_str();
+
+			m_Unit = unit;
+			m_Type = type;
+			int widthImg, heightImg, numColCh;
+			stbi_set_flip_vertically_on_load(true);
+			unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+
+			glGenTextures(1, &m_ID);
+			glActiveTexture(GL_TEXTURE0 + unit);
+			glBindTexture(GL_TEXTURE_2D, m_ID);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+			if (bytes) {
+				switch (numColCh) {
+				case 4:
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+					break;
+				case 3:
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+					break;
+				case 1:
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RED, GL_UNSIGNED_BYTE, bytes);
+					break;
+				default:
+				{
+					stbi_image_free(bytes);
+					glBindTexture(GL_TEXTURE_2D, 0);
+					throw std::exception("Automatic Texture type recognition failed\n");
+					break;
+				}
+				}
+
+				glGenerateMipmap(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, 0);
+
+				stbi_image_free(bytes);
+			}
+			else {
+				glBindTexture(GL_TEXTURE_2D, 0);
+				std::string exceptionMessage = "Failed to load texture: " + std::string(image);
+				stbi_image_free(bytes);
+				throw std::exception(exceptionMessage.c_str());
+
+			}
+		}
+
 		inline void bind() override {
 			glActiveTexture(GL_TEXTURE0 + m_Unit);
 			glBindTexture(GL_TEXTURE_2D, m_ID);

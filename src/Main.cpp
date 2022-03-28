@@ -20,18 +20,28 @@ int main()
 	rtre::enable(GL_FRONT);
 	rtre::setFrontFace(GL_CCW);
 
-	rtre::Cube mysphre;
+	rtre::Skybox myskybox;
+
+	rtre::Sphere m;
+
+	rtre::PointLight mylight(glm::vec3(3, 1, 1),glm::vec3(1,1,1));
 
 	while (!window.shouldClose() && !window.isKeyPressed(GLFW_KEY_ESCAPE)) {
-		rtre::setBackgroundColor(0.5, 0.1, 0.1,1.0);
 		rtre::clearBuffers(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		rtre::setBackgroundColor(0.5, 0.1, 0.1, 1.0);
 		rtre::camera.updatePerspective();
 
-		mysphre.draw();
+		mylight.position = glm::rotateY(mylight.position,glm::radians(.05f));
 
+		m.draw();
+		
+
+		myskybox.draw();
+
+		rtre::controller::control();
 		rtre::Window::pollEvents();
 		window.swapBuffers();
-		rtre::controller::control();
 	}
 
 	rtre::Window::terminate();
